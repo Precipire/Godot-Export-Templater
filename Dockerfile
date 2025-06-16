@@ -22,4 +22,6 @@ WORKDIR /workspace
 COPY ./scripts/build_templates.sh /workspace/scripts/build_templates.sh
 RUN chmod +x /workspace/scripts/build_templates.sh
 
+RUN git clone https://github.com/godotengine/godot.git /workspace/godot
+
 CMD ["/bin/bash"]
