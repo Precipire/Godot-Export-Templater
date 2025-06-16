@@ -15,4 +15,5 @@ Requires Docker to be installed and running (https://docs.docker.com/get-started
 - Add option for engine string stripping (to make finding the encryption key more difficult)
 
 ## Known Bugs
-- Certain console prints won't print until the build is fully compiled (thread issue)
+- Console won't print the whole output
+- build profiles DO NOT WORK 
