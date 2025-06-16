@@ -142,7 +142,4 @@ text = "Build Profile (optional):"
 [node name="LineEdit" type="LineEdit" parent="VBoxContainer/BuildProfile"]
 layout_mode = 2
 
-[node name="sconsDisplay" type="Label" parent="VBoxContainer"]
-layout_mode = 2
-
 [connection signal="confirmed" from="." to="." method="start_build"]
