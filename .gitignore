@@ -16,3 +16,4 @@ mono_crash.*.json
 
 # Ignore output folder
 output/
+/build_profiles
