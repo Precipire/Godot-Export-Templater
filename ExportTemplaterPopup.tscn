@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cxkeatmqmkty0" path="res://addons/exporttemplater/export_templater_popup.gd" id="1_nm325"]
 
 [node name="PopupPanel" type="ConfirmationDialog"]
+title = "Godot Export Templater"
 position = Vector2i(0, 36)
 size = Vector2i(504, 317)
 visible = true
