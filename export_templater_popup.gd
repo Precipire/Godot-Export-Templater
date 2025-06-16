@@ -8,7 +8,6 @@ signal build_requested(version, encryption_key, platform, target, arch, profile)
 @onready var godot_version: OptionButton = $VBoxContainer/GodotVersion/OptionButton
 @onready var platform: OptionButton = $VBoxContainer/Platform/OptionButton
 @onready var architecture: OptionButton = $VBoxContainer/Architecture/OptionButton
-@onready var scons_display: Label = $VBoxContainer/sconsDisplay
 @onready var build_profile: LineEdit = $VBoxContainer/BuildProfile/LineEdit
 @onready var target_options: OptionButton = $VBoxContainer/Target/OptionButton
 
