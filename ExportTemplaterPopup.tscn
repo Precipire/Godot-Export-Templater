@@ -2,19 +2,18 @@
 
 [ext_resource type="Script" uid="uid://cxkeatmqmkty0" path="res://addons/exporttemplater/export_templater_popup.gd" id="1_nm325"]
 
-[node name="PopupPanel" type="PopupPanel"]
+[node name="PopupPanel" type="ConfirmationDialog"]
 position = Vector2i(0, 36)
-size = Vector2i(504, 276)
+size = Vector2i(504, 317)
 visible = true
-unresizable = false
-borderless = false
+ok_button_text = "Start Build"
 script = ExtResource("1_nm325")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 500.0
-offset_bottom = 272.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 496.0
+offset_bottom = 268.0
 
 [node name="Encryption" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -139,12 +138,4 @@ layout_mode = 2
 [node name="sconsDisplay" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 
-[node name="Buttons" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="Start" type="Button" parent="VBoxContainer/Buttons"]
-layout_mode = 2
-text = "Start Build"
-
-[connection signal="pressed" from="VBoxContainer/Buttons/Start" to="." method="start_build"]
+[connection signal="confirmed" from="." to="." method="start_build"]

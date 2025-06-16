@@ -9,7 +9,7 @@ const EXPORT_TEMPLATER_POPUP = preload("res://addons/exporttemplater/ExportTempl
 var active_pipe: FileAccess
 var stderr: FileAccess
 var pid: int
-var docker_build_thread: Thread
+var thread: Thread
 
 var build_context
 
@@ -46,8 +46,8 @@ func create_docker_build(version):
 		stderr = image_pipe["stderr"]
 		pid = image_pipe["pid"]
 		
-		docker_build_thread = Thread.new()
-		docker_build_thread.start(_thread_func)
+		thread = Thread.new()
+		thread.start(_thread_func)
 		
 		var line=""
 		while true:
@@ -93,8 +93,8 @@ func create_godot_template(version, encryption_key, platform, target, arch, prof
 		stderr = image_pipe["stderr"]
 		pid = image_pipe["pid"]
 		
-		docker_build_thread = Thread.new()
-		docker_build_thread.start(_thread_func)
+		thread = Thread.new()
+		thread.start(_thread_func)
 		
 		var line=""
 		while true:
@@ -130,7 +130,7 @@ func _thread_func():
 	pipe_in_progress.emit.call_deferred(null)
 	call_deferred("clean_thread")
 	
-func clean_thread(thread: Thread):
+func clean_thread():
 	active_pipe.close()
 	stderr.close()
 	thread.wait_to_finish()

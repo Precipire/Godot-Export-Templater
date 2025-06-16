@@ -1,5 +1,5 @@
 @tool
-extends PopupPanel
+extends ConfirmationDialog
 
 signal build_requested(version, encryption_key, platform, target, arch, profile)
 @onready var encryption: LineEdit = $VBoxContainer/Encryption/LineEdit
@@ -7,7 +7,6 @@ signal build_requested(version, encryption_key, platform, target, arch, profile)
 @onready var platform: OptionButton = $VBoxContainer/Platform/OptionButton
 @onready var architecture: OptionButton = $VBoxContainer/Architecture/OptionButton
 @onready var scons_display: Label = $VBoxContainer/sconsDisplay
-@onready var start: Button = $VBoxContainer/Buttons/Start
 @onready var build_profile: LineEdit = $VBoxContainer/BuildProfile/LineEdit
 @onready var target_options: OptionButton = $VBoxContainer/Target/OptionButton
 
