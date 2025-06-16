@@ -66,19 +66,20 @@ func create_docker_build(version):
 				break
 			print(line)
 
+## Displays the popup and hooks in the signal
 func show_options():
 	var popup = EXPORT_TEMPLATER_POPUP.instantiate()
 	get_editor_interface().get_base_control().add_child(popup)
 	popup.popup_centered()
-	popup.connect("build_requested", create_godot_template)
+	popup.connect("build_requested", create_godot_template) 
 
+## The real part of this script
 func create_godot_template(version, encryption_key, platform, target, arch, profile):
 	#First we build the image which we need to switch to a pipe
 	create_docker_build(image_tag)
 	
 	# docker run --rm -v /abs/path/to/project:/project -v /abs/path/to/out:/out godot-templater:v0.1.0 /project/scripts/build_template.sh
-	var abs_project = ProjectSettings.globalize_path("res://")
-	var abs_out = ProjectSettings.globalize_path("res://build_output")
+	# Set up the command here
 	var script_path = "/workspace/scripts/build_templates.sh"
 	var bin = "docker"
 	var args = [
@@ -95,12 +96,12 @@ func create_godot_template(version, encryption_key, platform, target, arch, prof
 		"-a", arch
 	]
 	
-	var image_pipe := OS.execute_with_pipe(bin, args)
+	var pipe := OS.execute_with_pipe(bin, args)
 	get_window().close_requested.connect(clean_thread)
-	if image_pipe.size() > 0: # we have successfully executed
-		active_pipe = image_pipe["stdio"]
-		stderr = image_pipe["stderr"]
-		pid = image_pipe["pid"]
+	if pipe.size() > 0: # we have successfully executed
+		active_pipe = pipe["stdio"]
+		stderr = pipe["stderr"]
+		pid = pipe["pid"]
 		
 		thread = Thread.new()
 		thread.start(_thread_func)
@@ -115,12 +116,9 @@ func create_godot_template(version, encryption_key, platform, target, arch, prof
 	
 	return
 
-func _process(delta: float) -> void:
-	pass
-
-signal pipe_in_progress
 # This code is a slightly modified version of wyattbikers code here:
 # https://forum.godotengine.org/t/os-execute-with-pipe-does-not-create-process-when-return-value-is-assigned-to-a-variable-until-application-is-closed/79109/5
+signal pipe_in_progress
 func _thread_func():
 	var line = ""
 	var pipe_err
