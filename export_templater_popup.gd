@@ -51,7 +51,7 @@ func start_build():
 	var sel_profile: String = ""
 	# Verify file exists
 	if ("res://addons/exporttemplater/build_profiles/"+build_profile.text).get_file() != "":
-		sel_platform = build_profile.text
+		sel_profile = build_profile.text
 	build_requested.emit(sel_version, sel_key, sel_platform, sel_target, sel_arch, sel_profile)
 	
 ## We need to make sure the key works or we get errors in docker

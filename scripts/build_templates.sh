@@ -51,7 +51,7 @@ if [ ! -d "$GODOT_DIR" ]; then
 fi
 
 cd "$GODOT_DIR"
-git fetch
+git fetch --all --tags
 git checkout "$GODOT_VERSION" || { echo "Git checkout failed: version '$GODOT_VERSION' not found"; exit 1; }
 
 case "$TARGET" in
@@ -80,7 +80,7 @@ case "$PLATFORM" in
     windows)
         echo "Platform $PLATFORM selected"
         #Add the extras for windows
-        SCONS_ARGS="$SCONS_ARGS p=$PLATFORM use_mingw=yes use_llvm=true"
+        SCONS_ARGS="$SCONS_ARGS p=$PLATFORM use_mingw=yes use_llvm=yes"
         ;;
     android|ios|linuxbsd|macos|web|windows)
         # valid platform, do nothing or echo confirmation
@@ -92,6 +92,12 @@ case "$PLATFORM" in
         exit 1
         ;;
 esac
+
+if [ -n "$PROFILE" ]; then
+    echo "Build profile detected, using"
+    SCONS_ARGS="$SCONS_ARGS profile='\"$PROFILE\"'"
+fi
+
 cd /workspace/godot
 scons $SCONS_ARGS
-mv ./bin/* ../output/
+mv ./bin/* /workspace/output/
