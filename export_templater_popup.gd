@@ -48,29 +48,8 @@ func start_build():
 	if ("res://addons/exporttemplater/build_profiles/"+build_profile.text).get_file() != "":
 		sel_platform = build_profile.text
 	build_requested.emit(sel_version, sel_key, sel_platform, sel_target, sel_arch, sel_profile)
-
-func verify_build():
-	var sel_version: String = godot_versions_list[godot_version.get_selected_id()]
-	var sel_key: String
-	if is_valid_encryption_key(encryption.text):
-		sel_key = encryption.text
-	else:
-		print("Entered Key is not a valid AES256 encryption key")
-		
-	var sel_platform: String = platforms_list[platform.get_selected_id()]
-	var sel_target: String = target_list[target_options.get_selected_id()]
-	var sel_arch: String = arch_list[architecture.get_selected_id()]
-	var sel_profile: String = ""
-	# Verify file exists
-	if ("res://addons/exporttemplater/build_profiles/"+build_profile.text).get_file() != "":
-		sel_platform = build_profile.text
-	
-	
 	
 func is_valid_encryption_key(key: String) -> bool:
 	var hex_key_regex = RegEx.new()
 	hex_key_regex.compile("^[0-9a-fA-F]{64}$")
 	return hex_key_regex.search(key) != null
-
-func variable_updated(data):
-	pass
