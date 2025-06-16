@@ -2,6 +2,8 @@
 extends ConfirmationDialog
 
 signal build_requested(version, encryption_key, platform, target, arch, profile)
+
+# get all of the inputs
 @onready var encryption: LineEdit = $VBoxContainer/Encryption/LineEdit
 @onready var godot_version: OptionButton = $VBoxContainer/GodotVersion/OptionButton
 @onready var platform: OptionButton = $VBoxContainer/Platform/OptionButton
@@ -10,19 +12,22 @@ signal build_requested(version, encryption_key, platform, target, arch, profile)
 @onready var build_profile: LineEdit = $VBoxContainer/BuildProfile/LineEdit
 @onready var target_options: OptionButton = $VBoxContainer/Target/OptionButton
 
+# lists for valid options.
+# Godot versions based on github tags
 var godot_versions_list := ["4.4.1-stable", "4.4-stable", "4.3-stable"]
 var platforms_list := ["android", "ios", "linuxbsd", "macos", "web", "windows"]
+# Not sure if these need to be filtered based on platform yet (I assume they do)
 var arch_list := ["auto", "x86_32", "x86_64", "arm32", "arm64", "rv64", "ppc32", "ppc64", "wasm32"]
 var target_list := ["editor", "template_debug", "template_release"]
 
 var args := []
 
 func _ready() -> void:
-	#populate
+	#populate the fields
 	godot_version.clear()
 	platform.clear()
 	architecture.clear()
-	scons_display.text = ""
+	target_options.clear()
 	for version in godot_versions_list:
 		godot_version.add_item(version)
 	for p in platforms_list:
@@ -32,6 +37,7 @@ func _ready() -> void:
 	for t in target_list:
 		target_options.add_item(t)
 
+## Gathers the inputs, verifies, then sends it to be compiled
 func start_build():
 	var sel_version: String = godot_versions_list[godot_version.get_selected_id()]
 	var sel_key: String
@@ -49,6 +55,7 @@ func start_build():
 		sel_platform = build_profile.text
 	build_requested.emit(sel_version, sel_key, sel_platform, sel_target, sel_arch, sel_profile)
 	
+## We need to make sure the key works or we get errors in docker
 func is_valid_encryption_key(key: String) -> bool:
 	var hex_key_regex = RegEx.new()
 	hex_key_regex.compile("^[0-9a-fA-F]{64}$")
