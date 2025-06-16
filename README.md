@@ -13,3 +13,6 @@ Requires Docker to be installed and running (https://docs.docker.com/get-started
 - Verify all export templates are functional
 - Add build profile support
 - Add option for engine string stripping (to make finding the encryption key more difficult)
+
+## Known Bugs
+- Certain console prints won't print until the build is fully compiled (thread issue)
