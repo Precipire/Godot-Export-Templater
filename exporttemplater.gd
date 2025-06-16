@@ -1,6 +1,7 @@
 @tool
 class_name ExportTemplater extends EditorPlugin
 
+# To be incremented when the dockerfile itself changes
 const DOCKER_IMAGE_VERSION = "v0.1.0"
 var image_tag = "godot-templater:"+DOCKER_IMAGE_VERSION
 
@@ -118,13 +119,13 @@ func _process(delta: float) -> void:
 	pass
 
 signal pipe_in_progress
+# This code is a slightly modified version of wyattbikers code here:
+# https://forum.godotengine.org/t/os-execute-with-pipe-does-not-create-process-when-return-value-is-assigned-to-a-variable-until-application-is-closed/79109/5
 func _thread_func():
 	var line = ""
 	var pipe_err
-	var err_output
 	while active_pipe.is_open():
 		pipe_err = active_pipe.get_error() 
-		err_output = active_pipe.get_error()
 		if pipe_err == OK:
 			line = active_pipe.get_line()
 			pipe_in_progress.emit.call_deferred(line)
@@ -137,7 +138,8 @@ func _thread_func():
 				break
 	pipe_in_progress.emit.call_deferred(null)
 	call_deferred("clean_thread")
-	
+
+# Theoretically does thread stuff when process is finished
 func clean_thread():
 	active_pipe.close()
 	stderr.close()
