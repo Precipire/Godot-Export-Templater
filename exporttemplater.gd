@@ -17,7 +17,6 @@ func _enter_tree() -> void:
 	add_tool_menu_item("Build Export Template", show_options)
 	if !is_docker_available():
 		return
-	create_docker_build(image_tag)
 
 func _exit_tree() -> void:
 	remove_tool_menu_item("Build Export Template")
