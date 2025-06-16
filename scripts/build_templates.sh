@@ -95,7 +95,7 @@ esac
 
 if [ -n "$PROFILE" ]; then
     echo "Build profile detected, using"
-    SCONS_ARGS="$SCONS_ARGS profile='\"$PROFILE\"'"
+    SCONS_ARGS="$SCONS_ARGS build_profile=$PROFILE module_regex_enabled=yes"
 fi
 
 cd /workspace/godot
