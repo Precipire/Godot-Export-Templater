@@ -77,7 +77,9 @@ func show_options():
 func create_godot_template(version, encryption_key, platform, target, arch, profile):
 	#First we build the image which we need to switch to a pipe
 	create_docker_build(image_tag)
-	
+	print("RUNNING DOCKER CONTAINER")
+	# Won't print from the command until the end for some reason so this will do for now
+	print("Cloning Godot repo")
 	# docker run --rm -v /abs/path/to/project:/project -v /abs/path/to/out:/out godot-templater:v0.1.0 /project/scripts/build_template.sh
 	# Set up the command here
 	var script_path = "/workspace/scripts/build_templates.sh"
