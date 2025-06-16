@@ -14,30 +14,39 @@ var thread: Thread
 var build_context
 
 func _enter_tree() -> void:
+	# Create the menu item
 	add_tool_menu_item("Build Export Template", show_options)
+	# Test if docker is available
 	if !is_docker_available():
 		return
 
 func _exit_tree() -> void:
+	# Remove the menu item to prevent errors
 	remove_tool_menu_item("Build Export Template")
 
+## Returns true/false depending if docker is running using "docker info"
 func is_docker_available() -> bool:
 	var output := []
-	var exit_code := OS.execute("docker", ["--version"], output, true)
-	print(output)
+	var exit_code := OS.execute("docker", ["info"], output, true)
 	if exit_code != 0:
 		print("Docker is not available or not installed. Make sure it is in your PATH")
+		print("Remember to start the docker engine!")
 		return false
+	print("Docker is alive and ready!")
 	return true
 
+## Creates the docker image from the Dockerfile (takes a while if there is no cache)
 func create_docker_build(version):
-	var dockerfile_res_path = "res://addons/exporttemplater/Dockerfile"
-	var dockerfile_abs_path = ProjectSettings.globalize_path(dockerfile_res_path)
+	
+	# This section gets the correct path based on where this script is
+	var res_path = get_script().resource_path
+	var dockerfile_abs_path = ProjectSettings.globalize_path(res_path)
 	build_context = dockerfile_abs_path.get_base_dir()
+	
 	var bin = "docker"
 	var args = ["build", "--progress=plain", "-t", image_tag, build_context]
 	print("BUILDING DOCKER IMAGE")
-	print("THIS WILL TAKE TIME ON FIRST RUN!!! LET IT DO ITS THING")
+	print("THIS WILL TAKE TIME ON FIRST RUN!")
 	var image_pipe := OS.execute_with_pipe(bin, args)
 	get_window().close_requested.connect(clean_thread)
 	if image_pipe.size() > 0: # we have successfully executed
@@ -55,7 +64,7 @@ func create_docker_build(version):
 				print("Finished!")
 				break
 			print(line)
-	
+
 func show_options():
 	var popup = EXPORT_TEMPLATER_POPUP.instantiate()
 	get_editor_interface().get_base_control().add_child(popup)
