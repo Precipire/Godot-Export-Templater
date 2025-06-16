@@ -1,5 +1,6 @@
 # Godot Export Templater
 Create encrypted export templates right inside of Godot!
+
 Requires Docker to be installed and running (https://docs.docker.com/get-started/get-docker/)
 
 ## Features
