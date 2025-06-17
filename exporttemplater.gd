@@ -5,7 +5,7 @@ class_name ExportTemplater extends EditorPlugin
 const DOCKER_IMAGE_VERSION = "v0.2.1"
 var image_tag = "godot-templater:"+DOCKER_IMAGE_VERSION
 
-const EXPORT_TEMPLATER_POPUP = preload("res://addons/exporttemplater/ExportTemplaterPopup.tscn")
+const EXPORT_TEMPLATER_POPUP = preload("uid://dap8b6avxtgnd")
 
 var active_pipe: FileAccess
 var stderr: FileAccess
