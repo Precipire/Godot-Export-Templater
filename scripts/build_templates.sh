@@ -50,6 +50,13 @@ if [ ! -d "$GODOT_DIR" ]; then
     git clone https://github.com/godotengine/godot.git "$GODOT_DIR"
 fi
 
+cd "/workspace/emsdk"
+git pull
+./emsdk install latest
+./emsdk activate latest
+
+source ./emsdk_env.sh
+
 cd "$GODOT_DIR"
 git fetch --all --tags
 git checkout "$GODOT_VERSION" || { echo "Git checkout failed: version '$GODOT_VERSION' not found"; exit 1; }

@@ -23,5 +23,7 @@ COPY ./scripts/build_templates.sh /workspace/scripts/build_templates.sh
 RUN chmod +x /workspace/scripts/build_templates.sh
 
 RUN git clone https://github.com/godotengine/godot.git /workspace/godot
+RUN git clone https://github.com/emscripten-core/emsdk.git /workspace/emsdk
+RUN git config --global advice.detachedHead false
 
 CMD ["/bin/bash"]
