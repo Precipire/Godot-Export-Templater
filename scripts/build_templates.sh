@@ -93,7 +93,7 @@ case "$PLATFORM" in
         echo "Platform $PLATFORM selected"
         #Disable threads for web builds
         SCONS_ARGS="$SCONS_ARGS p=$PLATFORM threads=no"
-    android|ios|linuxbsd|macos|web|windows)
+    android|ios|linuxbsd|macos)
         # valid platform, do nothing or echo confirmation
         echo "Platform $PLATFORM selected"
         SCONS_ARGS="$SCONS_ARGS p=$PLATFORM"
