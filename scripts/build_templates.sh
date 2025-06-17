@@ -89,6 +89,10 @@ case "$PLATFORM" in
         #Add the extras for windows
         SCONS_ARGS="$SCONS_ARGS p=$PLATFORM use_mingw=yes use_llvm=yes"
         ;;
+    web)
+        echo "Platform $PLATFORM selected"
+        #Disable threads for web builds
+        SCONS_ARGS="$SCONS_ARGS p=$PLATFORM threads=no"
     android|ios|linuxbsd|macos|web|windows)
         # valid platform, do nothing or echo confirmation
         echo "Platform $PLATFORM selected"
