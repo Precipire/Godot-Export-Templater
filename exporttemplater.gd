@@ -2,7 +2,7 @@
 class_name ExportTemplater extends EditorPlugin
 
 # To be incremented when the dockerfile itself changes
-const DOCKER_IMAGE_VERSION = "v0.2.1"
+const DOCKER_IMAGE_VERSION = "v0.2.2"
 var image_tag = "godot-templater:"+DOCKER_IMAGE_VERSION
 
 const EXPORT_TEMPLATER_POPUP = preload("uid://dap8b6avxtgnd")

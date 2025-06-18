@@ -21,7 +21,7 @@ RUN apt update && apt install -y \
     libudev-dev \
     libxi-dev \
     libxrandr-dev \
-    libwayland-dev
+    libwayland-dev \
     && apt clean
 
 # Set MinGW to use the POSIX threading model (required for Godot)
