@@ -11,6 +11,17 @@ RUN apt update && apt install -y \
     pkg-config libssl-dev \
     zip wget \
     mingw-w64 \
+    libx11-dev \
+    libxcursor-dev \
+    libxinerama-dev \
+    libgl1-mesa-dev \
+    libglu1-mesa-dev \
+    libasound2-dev \
+    libpulse-dev \
+    libudev-dev \
+    libxi-dev \
+    libxrandr-dev \
+    libwayland-dev
     && apt clean
 
 # Set MinGW to use the POSIX threading model (required for Godot)
