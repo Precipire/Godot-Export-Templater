@@ -30,8 +30,9 @@ RUN update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32
 
 WORKDIR /workspace
 
-COPY ./scripts/build_templates.sh /workspace/scripts/build_templates.sh
-RUN chmod +x /workspace/scripts/build_templates.sh
+COPY ./scripts/env_setup.sh /workspace/scripts/env_setup.sh
+COPY ./scripts/build_templates.py /workspace/scripts/build_templates.py
+RUN chmod +x /workspace/scripts/build_templates.py
 
 RUN git clone https://github.com/godotengine/godot.git /workspace/godot
 RUN git clone https://github.com/emscripten-core/emsdk.git /workspace/emsdk

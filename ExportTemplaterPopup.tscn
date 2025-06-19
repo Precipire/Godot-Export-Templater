@@ -10,37 +10,49 @@ visible = true
 ok_button_text = "Start Build"
 script = ExtResource("1_nm325")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="Tabs" type="TabContainer" parent="."]
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 496.0
 offset_bottom = 268.0
+current_tab = 0
 
-[node name="Encryption" type="HBoxContainer" parent="VBoxContainer"]
+[node name="Web" type="MarginContainer" parent="Tabs"]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 4
+metadata/_tab_index = 0
+
+[node name="VCon" type="VBoxContainer" parent="Tabs/Web"]
+layout_mode = 2
+
+[node name="Encryption" type="HBoxContainer" parent="Tabs/Web/VCon"]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="VBoxContainer/Encryption"]
+[node name="Label" type="Label" parent="Tabs/Web/VCon/Encryption"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Encryption Key: "
 
-[node name="LineEdit" type="LineEdit" parent="VBoxContainer/Encryption"]
+[node name="LineEdit" type="LineEdit" parent="Tabs/Web/VCon/Encryption"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 secret = true
 
-[node name="GodotVersion" type="HBoxContainer" parent="VBoxContainer"]
+[node name="GodotVersion" type="HBoxContainer" parent="Tabs/Web/VCon"]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="VBoxContainer/GodotVersion"]
+[node name="Label" type="Label" parent="Tabs/Web/VCon/GodotVersion"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Godot Version:"
 
-[node name="OptionButton" type="OptionButton" parent="VBoxContainer/GodotVersion"]
+[node name="OptionButton" type="OptionButton" parent="Tabs/Web/VCon/GodotVersion"]
 layout_mode = 2
 selected = 0
 item_count = 3
@@ -51,96 +63,132 @@ popup/item_1/id = 1
 popup/item_2/text = "4.3-stable"
 popup/item_2/id = 2
 
-[node name="Platform" type="HBoxContainer" parent="VBoxContainer"]
+[node name="Target" type="HBoxContainer" parent="Tabs/Web/VCon"]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="VBoxContainer/Platform"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Platform:"
-
-[node name="OptionButton" type="OptionButton" parent="VBoxContainer/Platform"]
-layout_mode = 2
-selected = 0
-item_count = 6
-popup/item_0/text = "android"
-popup/item_0/id = 0
-popup/item_1/text = "ios"
-popup/item_1/id = 1
-popup/item_2/text = "linuxbsd"
-popup/item_2/id = 2
-popup/item_3/text = "macos"
-popup/item_3/id = 3
-popup/item_4/text = "web"
-popup/item_4/id = 4
-popup/item_5/text = "windows"
-popup/item_5/id = 5
-
-[node name="Target" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="Label" type="Label" parent="VBoxContainer/Target"]
+[node name="Label" type="Label" parent="Tabs/Web/VCon/Target"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Target:"
 justification_flags = 162
 
-[node name="OptionButton" type="OptionButton" parent="VBoxContainer/Target"]
+[node name="OptionButton" type="OptionButton" parent="Tabs/Web/VCon/Target"]
 layout_mode = 2
-flat = true
 selected = 0
 item_count = 3
-popup/item_0/text = "editor"
+popup/item_0/text = "template_release"
 popup/item_0/id = 0
 popup/item_1/text = "template_debug"
 popup/item_1/id = 1
-popup/item_2/text = "template_release"
+popup/item_2/text = "editor"
 popup/item_2/id = 2
 
-[node name="Architecture" type="HBoxContainer" parent="VBoxContainer"]
+[node name="Threads" type="HBoxContainer" parent="Tabs/Web/VCon"]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="VBoxContainer/Architecture"]
+[node name="Label" type="Label" parent="Tabs/Web/VCon/Threads"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Threads:   (Disabled by default)"
+justification_flags = 162
+
+[node name="CheckButton" type="CheckButton" parent="Tabs/Web/VCon/Threads"]
+layout_mode = 2
+
+[node name="Windows" type="MarginContainer" parent="Tabs"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 4
+metadata/_tab_index = 1
+
+[node name="VCon" type="VBoxContainer" parent="Tabs/Windows"]
+layout_mode = 2
+
+[node name="Encryption" type="HBoxContainer" parent="Tabs/Windows/VCon"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Tabs/Windows/VCon/Encryption"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Encryption Key: "
+
+[node name="LineEdit" type="LineEdit" parent="Tabs/Windows/VCon/Encryption"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+secret = true
+
+[node name="GodotVersion" type="HBoxContainer" parent="Tabs/Windows/VCon"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Tabs/Windows/VCon/GodotVersion"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Godot Version:"
+
+[node name="OptionButton" type="OptionButton" parent="Tabs/Windows/VCon/GodotVersion"]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "4.4.1-stable"
+popup/item_0/id = 0
+popup/item_1/text = "4.4-stable"
+popup/item_1/id = 1
+popup/item_2/text = "4.3-stable"
+popup/item_2/id = 2
+
+[node name="Target" type="HBoxContainer" parent="Tabs/Windows/VCon"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Tabs/Windows/VCon/Target"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Target:"
+justification_flags = 162
+
+[node name="OptionButton" type="OptionButton" parent="Tabs/Windows/VCon/Target"]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "template_release"
+popup/item_0/id = 0
+popup/item_1/text = "template_debug"
+popup/item_1/id = 1
+popup/item_2/text = "editor"
+popup/item_2/id = 2
+
+[node name="Architecture" type="HBoxContainer" parent="Tabs/Windows/VCon"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Tabs/Windows/VCon/Architecture"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Architecture:"
+justification_flags = 162
 
-[node name="OptionButton" type="OptionButton" parent="VBoxContainer/Architecture"]
+[node name="OptionButton" type="OptionButton" parent="Tabs/Windows/VCon/Architecture"]
 layout_mode = 2
 selected = 0
-item_count = 9
+item_count = 5
 popup/item_0/text = "auto"
 popup/item_0/id = 0
-popup/item_1/text = "x86_32"
+popup/item_1/text = "x86_64"
 popup/item_1/id = 1
-popup/item_2/text = "x86_64"
-popup/item_2/id = 2
-popup/item_3/text = "arm32"
-popup/item_3/id = 3
-popup/item_4/text = "arm64"
+popup/item_2/text = "arm64"
+popup/item_2/id = 3
+popup/item_3/text = "x86_32"
+popup/item_3/id = 2
+popup/item_4/text = "arm32"
 popup/item_4/id = 4
-popup/item_5/text = "rv64"
-popup/item_5/id = 5
-popup/item_6/text = "ppc32"
-popup/item_6/id = 6
-popup/item_7/text = "ppc64"
-popup/item_7/id = 7
-popup/item_8/text = "wasm32"
-popup/item_8/id = 8
-
-[node name="BuildProfile" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="Label" type="Label" parent="VBoxContainer/BuildProfile"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Build Profile (optional):"
-
-[node name="LineEdit" type="LineEdit" parent="VBoxContainer/BuildProfile"]
-layout_mode = 2
 
 [connection signal="confirmed" from="." to="." method="start_build"]
+[connection signal="tab_changed" from="Tabs" to="." method="_on_tab_changed"]

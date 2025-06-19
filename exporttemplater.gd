@@ -2,7 +2,7 @@
 class_name ExportTemplater extends EditorPlugin
 
 # To be incremented when the dockerfile itself changes
-const DOCKER_IMAGE_VERSION = "v0.2.2"
+var DOCKER_IMAGE_VERSION = "v0.3.4"
 var image_tag = "godot-templater:"+DOCKER_IMAGE_VERSION
 
 const EXPORT_TEMPLATER_POPUP = preload("uid://dap8b6avxtgnd")
@@ -46,10 +46,18 @@ func show_options():
 	popup.connect("build_requested", create_godot_template) 
 
 ## The real part of this script
-func create_godot_template(version, encryption_key, platform, target, arch, profile):
+func create_godot_template(build_info):
+	# Turn build info into a JSON file inside the config folder
+	var res_path = get_script().resource_path
+	var abs_path = ProjectSettings.globalize_path(res_path)
+	build_context = abs_path.get_base_dir()
+	var json = JSON.stringify(build_info)
+	var config_file = FileAccess.open(build_context + "/config/data.json", FileAccess.WRITE)
+	config_file.store_line(json)
 	#First we build the image which we need to switch to a pipe
 	await create_docker_build(image_tag)
-	await run_docker_script(version, encryption_key, platform, target, arch, profile)
+
+	await run_docker_script(build_info)
 	print("Complete! Check output folder for templates")
 
 
@@ -60,9 +68,7 @@ func create_docker_build(version):
 	print("This may take a while...")
 	
 	# Get the correct path based on where this script is
-	var res_path = get_script().resource_path
-	var dockerfile_abs_path = ProjectSettings.globalize_path(res_path)
-	build_context = dockerfile_abs_path.get_base_dir()
+
 	
 	var bin = "docker"
 	var args = ["build", "--progress=plain", "-t", image_tag, build_context]
@@ -76,31 +82,23 @@ func create_docker_build(version):
 	await start_pipe_thread(pipe)
 	print("Image Built")
 
-func run_docker_script(version, encryption_key, platform, target, arch, profile: String):
+func run_docker_script(build_info):
 	print("Running Docker container")
 	print("This will take an eternity... (go drink some water)")
 	# Won't print from the command until the end for some reason so this will do for now
-	print("Cloning Godot repo")
 	# docker run --rm -v /abs/path/to/project:/project -v /abs/path/to/out:/out godot-templater:v0.1.0 /project/scripts/build_template.sh
 	# Set up the command here
-	var script_path = "/workspace/scripts/build_templates.sh"
+	var script_path = "/workspace/scripts/env_setup.sh"
 	var bin = "docker"
 	var args = [
-		"run", "--rm",
+		"run", #"--rm",
 		"-v", build_context + "/output:/workspace/output",
 		"-v", build_context + "/build_profiles:/workspace/profiles",
+		"-v", build_context + "/config:/workspace/config",
 		image_tag,
 		script_path,
-		"-b", version,
-		"-k", encryption_key,
-		"-r", target,
-		"-p", platform,
-		"-a", arch,
 	]
-	print("GDSFDS "+profile)
-	if profile != "":
-		args.append("-c")
-		args.append("/workspace/profiles/"+profile)
+
 	var pipe := OS.execute_with_pipe(bin, args)
 	if pipe.size() == 0:
 		print("Docker Container Failed")
