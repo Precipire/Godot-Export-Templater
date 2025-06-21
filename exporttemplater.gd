@@ -50,7 +50,8 @@ func show_options():
 	var popup = EXPORT_TEMPLATER_POPUP.instantiate()
 	get_editor_interface().get_base_control().add_child(popup)
 	popup.popup_centered()
-	popup.connect("build_requested", create_godot_template) 
+	if !popup.is_connected("build_requested", create_godot_template):
+		popup.build_requested.connect(create_godot_template) 
 
 ## The real part of this script
 func create_godot_template(build_info):
@@ -81,7 +82,8 @@ func create_docker_build(version):
 	var args = ["build", "--progress=plain", "-t", image_tag, build_context]
 	
 	var pipe := OS.execute_with_pipe(bin, args)
-	get_window().close_requested.connect(clean_thread)
+	if !get_window().is_connected("close_requested",clean_thread):
+		get_window().close_requested.connect(clean_thread)
 	if pipe.size() == 0:
 		# Something went wrong
 		print("Docker Image Build Failed")
@@ -122,8 +124,8 @@ func start_pipe_thread(pipe: Dictionary):
 	pid = pipe["pid"]
 	
 	var finished := false
-	
-	pipe_line.connect(_on_pipe_line)
+	if !pipe_line.is_connected(_on_pipe_line):
+		pipe_line.connect(_on_pipe_line)
 	
 	thread = Thread.new()
 	thread.start(_thread_func)
