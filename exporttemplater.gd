@@ -13,6 +13,8 @@ var pid: int
 var thread: Thread
 var build_context: String
 
+var core_count
+
 signal pipe_line(line)
 signal pipe_done
 
@@ -21,6 +23,10 @@ func _enter_tree() -> void:
 	add_tool_menu_item("Build Export Template", show_options)
 	# Test if docker is available
 	is_docker_available()
+	
+	# get core count
+	core_count = OS.get_processor_count()
+	print(core_count)
 
 func _exit_tree() -> void:
 	# Remove the menu item to prevent errors
@@ -93,6 +99,7 @@ func run_docker_script(build_info):
 	var bin = "docker"
 	var args = [
 		"run", "--rm",
+		"--cpus", str(core_count-2),
 		"-v", build_context + "/scripts:/workspace/scripts",
 		"-v", build_context + "/output:/workspace/output",
 		"-v", build_context + "/build_profiles:/workspace/profiles",
