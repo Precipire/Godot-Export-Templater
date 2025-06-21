@@ -2,7 +2,7 @@
 class_name ExportTemplater extends EditorPlugin
 
 # To be incremented when the dockerfile itself changes
-var DOCKER_IMAGE_VERSION = "v0.3.4"
+var DOCKER_IMAGE_VERSION = "v0.3.5"
 var image_tag = "godot-templater:"+DOCKER_IMAGE_VERSION
 
 const EXPORT_TEMPLATER_POPUP = preload("uid://dap8b6avxtgnd")
@@ -25,6 +25,7 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
 	# Remove the menu item to prevent errors
 	remove_tool_menu_item("Build Export Template")
+	# I still don't fully get threads
 	if thread and thread.is_alive():
 		clean_thread()
 
@@ -91,7 +92,8 @@ func run_docker_script(build_info):
 	var script_path = "/workspace/scripts/env_setup.sh"
 	var bin = "docker"
 	var args = [
-		"run", #"--rm",
+		"run", "--rm",
+		"-v", build_context + "/scripts:/workspace/scripts",
 		"-v", build_context + "/output:/workspace/output",
 		"-v", build_context + "/build_profiles:/workspace/profiles",
 		"-v", build_context + "/config:/workspace/config",

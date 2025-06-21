@@ -1,5 +1,5 @@
 #!/bin/bash
-
+chmod +x /workspace/scripts/build_templates.py
 cd "/workspace/emsdk"
 git pull
 ./emsdk install latest
