@@ -23,10 +23,14 @@ func _enter_tree() -> void:
 	add_tool_menu_item("Build Export Template", show_options)
 	# Test if docker is available
 	is_docker_available()
+	var res_path = get_script().resource_path
+	var abs_path = ProjectSettings.globalize_path(res_path)
+	build_context = abs_path.get_base_dir()
+	
+	test_environment(build_context)
 	
 	# get core count
 	core_count = OS.get_processor_count()
-	print(core_count)
 
 func _exit_tree() -> void:
 	# Remove the menu item to prevent errors
@@ -56,9 +60,6 @@ func show_options():
 ## The real part of this script
 func create_godot_template(build_info):
 	# Turn build info into a JSON file inside the config folder
-	var res_path = get_script().resource_path
-	var abs_path = ProjectSettings.globalize_path(res_path)
-	build_context = abs_path.get_base_dir()
 	var json = JSON.stringify(build_info)
 	var config_file = FileAccess.open(build_context + "/config/data.json", FileAccess.WRITE)
 	config_file.store_line(json)
@@ -172,3 +173,21 @@ func clean_thread():
 	if pid > 0:
 		OS.kill(pid)
 	pid = 0
+
+func test_environment(build_context):
+	print("Export-Templater: Running env tests")
+	print("Export-Templater: Build Path: " + build_context)
+	# Tests to run. Are folders visible, are files visible, is docker running
+	# Do our scripts exist
+	assert(DirAccess.dir_exists_absolute(build_context+"/scripts"), "Export-Templater: Could not find the scripts folder. Should be at " + build_context + "/scripts")
+	assert(FileAccess.file_exists(build_context+"/scripts/env_setup.sh"), "Export-Templater: Could not find env_setup.sh")
+	assert(FileAccess.file_exists(build_context+"/scripts/build_templates.py"), "Export-Templater: Could not find build_templates.py")
+	
+	# Does output folder exist?
+	assert(DirAccess.dir_exists_absolute(build_context+"/output"), "Export-Templater: Could not find the Output Folder. Should be at " + build_context + "/output")
+	
+	# Does our config folder exist
+	assert(DirAccess.dir_exists_absolute(build_context+"/config"), "Export-Templater: Could not find the Config Folder. Should be at " + build_context + "/config")
+	
+	print("Export-Templater: Testing complete!")
+	
