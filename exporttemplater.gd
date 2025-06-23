@@ -63,9 +63,10 @@ func create_godot_template(build_info):
 	var json = JSON.stringify(build_info)
 	var config_file = FileAccess.open(build_context + "/config/data.json", FileAccess.WRITE)
 	config_file.store_line(json)
+	await get_tree().create_timer(1).timeout
 	#First we build the image which we need to switch to a pipe
 	await create_docker_build(image_tag)
-
+	await get_tree().create_timer(1).timeout
 	await run_docker_script(build_info)
 	print("Complete! Check output folder for templates")
 
