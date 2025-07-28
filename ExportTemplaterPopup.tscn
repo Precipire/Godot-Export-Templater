@@ -15,9 +15,10 @@ offset_left = 8.0
 offset_top = 8.0
 offset_right = 496.0
 offset_bottom = 268.0
-current_tab = 0
+current_tab = 2
 
 [node name="Web" type="MarginContainer" parent="Tabs"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 7
 theme_override_constants/margin_top = 6
@@ -189,6 +190,94 @@ popup/item_3/text = "x86_32"
 popup/item_3/id = 2
 popup/item_4/text = "arm32"
 popup/item_4/id = 4
+
+[node name="Linuxbsd" type="MarginContainer" parent="Tabs"]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 4
+metadata/_tab_index = 2
+
+[node name="VCon" type="VBoxContainer" parent="Tabs/Linuxbsd"]
+layout_mode = 2
+
+[node name="Encryption" type="HBoxContainer" parent="Tabs/Linuxbsd/VCon"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Tabs/Linuxbsd/VCon/Encryption"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Encryption Key: "
+
+[node name="LineEdit" type="LineEdit" parent="Tabs/Linuxbsd/VCon/Encryption"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+secret = true
+
+[node name="GodotVersion" type="HBoxContainer" parent="Tabs/Linuxbsd/VCon"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Tabs/Linuxbsd/VCon/GodotVersion"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Godot Version:"
+
+[node name="OptionButton" type="OptionButton" parent="Tabs/Linuxbsd/VCon/GodotVersion"]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "4.4.1-stable"
+popup/item_0/id = 0
+popup/item_1/text = "4.4-stable"
+popup/item_1/id = 1
+popup/item_2/text = "4.3-stable"
+popup/item_2/id = 2
+
+[node name="Target" type="HBoxContainer" parent="Tabs/Linuxbsd/VCon"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Tabs/Linuxbsd/VCon/Target"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Target:"
+justification_flags = 162
+
+[node name="OptionButton" type="OptionButton" parent="Tabs/Linuxbsd/VCon/Target"]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "template_release"
+popup/item_0/id = 0
+popup/item_1/text = "template_debug"
+popup/item_1/id = 1
+popup/item_2/text = "editor"
+popup/item_2/id = 2
+
+[node name="Architecture" type="HBoxContainer" parent="Tabs/Linuxbsd/VCon"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Tabs/Linuxbsd/VCon/Architecture"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Architecture:"
+justification_flags = 162
+
+[node name="OptionButton" type="OptionButton" parent="Tabs/Linuxbsd/VCon/Architecture"]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "auto"
+popup/item_0/id = 0
+popup/item_1/text = "x86_64"
+popup/item_1/id = 1
+popup/item_2/text = "x86_32"
+popup/item_2/id = 2
 
 [connection signal="confirmed" from="." to="." method="start_build"]
 [connection signal="tab_changed" from="Tabs" to="." method="_on_tab_changed"]

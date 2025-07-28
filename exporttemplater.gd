@@ -2,8 +2,8 @@
 class_name ExportTemplater extends EditorPlugin
 
 # To be incremented when the dockerfile itself changes
-var DOCKER_IMAGE_VERSION = "v0.3.5"
-var image_tag = "godot-templater:"+DOCKER_IMAGE_VERSION
+var DOCKER_IMAGE_VERSION = "v1.3.6"
+var image_tag = "godot-templater-"
 
 const EXPORT_TEMPLATER_POPUP = preload("uid://dap8b6avxtgnd")
 
@@ -57,31 +57,62 @@ func show_options():
 	if !popup.is_connected("build_requested", create_godot_template):
 		popup.build_requested.connect(create_godot_template) 
 
+func download_godot_source() -> bool:
+	var output := []
+	var exit_code := OS.execute("git", ["clone", "https://github.com/godotengine/godot.git", build_context + "/godot_source/godot"])
+	if exit_code != 0:
+		print("Something went wrong cloning Godot")
+		return false
+	print("Godot Cloned!")
+	return true
+
 ## The real part of this script
 func create_godot_template(build_info):
+	
+	# Pull Godot
+	download_godot_source()
+	
 	# Turn build info into a JSON file inside the config folder
 	var json = JSON.stringify(build_info)
 	var config_file = FileAccess.open(build_context + "/config/data.json", FileAccess.WRITE)
 	config_file.store_line(json)
 	await get_tree().create_timer(1).timeout
+	
+	var dockerfile_name := ""
+	var setup_name := ""
+	match build_info["platform"]:
+		"web":
+			dockerfile_name = "Dockerfile-Web"
+			setup_name = "web_setup.sh"
+		"windows":
+			dockerfile_name = "Dockerfile-Windows"
+			setup_name = "windows_setup.sh"
+		"linuxbsd":
+			dockerfile_name = "Dockerfile-Linuxbsd"
+			setup_name = "linuxbsd_setup.sh"
+	
 	#First we build the image which we need to switch to a pipe
-	await create_docker_build(image_tag)
+	await create_docker_build(image_tag, dockerfile_name, build_info)
 	await get_tree().create_timer(1).timeout
-	await run_docker_script(build_info)
+	await run_docker_script(build_info, setup_name)
 	print("Complete! Check output folder for templates")
 
 
 ## Creates the docker image from the Dockerfile (takes a while if there is no cache)
 signal docker_build_complete
-func create_docker_build(version):
+func create_docker_build(version, dockerfile_name: String, build_info):
 	print("Building Docker image")
-	print("This may take a while...")
+	print("This may take a while for first time runs...")
 	
-	# Get the correct path based on where this script is
-
-	
+	print(build_context + "/Dockerfiles/"+ dockerfile_name)
 	var bin = "docker"
-	var args = ["build", "--progress=plain", "-t", image_tag, build_context]
+	var args = ["build",
+				"--progress=plain",
+				"-t",
+				image_tag+build_info["platform"]+DOCKER_IMAGE_VERSION,
+				"--file",
+				build_context + "/Dockerfiles/"+dockerfile_name,
+				build_context + "/Dockerfiles"]
 	
 	var pipe := OS.execute_with_pipe(bin, args)
 	if !get_window().is_connected("close_requested",clean_thread):
@@ -93,13 +124,13 @@ func create_docker_build(version):
 	await start_pipe_thread(pipe)
 	print("Image Built")
 
-func run_docker_script(build_info):
+func run_docker_script(build_info, setup_name):
 	print("Running Docker container")
 	print("This will take an eternity... (go drink some water)")
 	# Won't print from the command until the end for some reason so this will do for now
 	# docker run --rm -v /abs/path/to/project:/project -v /abs/path/to/out:/out godot-templater:v0.1.0 /project/scripts/build_template.sh
 	# Set up the command here
-	var script_path = "/workspace/scripts/env_setup.sh"
+	var script_path = "/workspace/scripts/" + setup_name
 	var bin = "docker"
 	var args = [
 		"run", "--rm",
@@ -108,7 +139,8 @@ func run_docker_script(build_info):
 		"-v", build_context + "/output:/workspace/output",
 		"-v", build_context + "/build_profiles:/workspace/profiles",
 		"-v", build_context + "/config:/workspace/config",
-		image_tag,
+		"-v", build_context + "/godot_source/godot:/workspace/godot",
+		image_tag+build_info["platform"]+DOCKER_IMAGE_VERSION,
 		script_path,
 	]
 
@@ -180,15 +212,20 @@ func test_environment(build_context):
 	print("Export-Templater: Build Path: " + build_context)
 	# Tests to run. Are folders visible, are files visible, is docker running
 	# Do our scripts exist
-	assert(DirAccess.dir_exists_absolute(build_context+"/scripts"), "Export-Templater: Could not find the scripts folder. Should be at " + build_context + "/scripts")
-	assert(FileAccess.file_exists(build_context+"/scripts/env_setup.sh"), "Export-Templater: Could not find env_setup.sh")
-	assert(FileAccess.file_exists(build_context+"/scripts/build_templates.py"), "Export-Templater: Could not find build_templates.py")
+	assert(DirAccess.dir_exists_absolute(build_context+"/scripts"), 
+	"Export-Templater: Could not find the scripts folder. Should be at " + build_context + "/scripts")
+	assert(FileAccess.file_exists(build_context+"/scripts/env_setup.sh"), 
+	"Export-Templater: Could not find env_setup.sh")
+	assert(FileAccess.file_exists(build_context+"/scripts/build_templates.py"), 
+	"Export-Templater: Could not find build_templates.py")
 	
 	# Does output folder exist?
-	assert(DirAccess.dir_exists_absolute(build_context+"/output"), "Export-Templater: Could not find the Output Folder. Should be at " + build_context + "/output")
+	assert(DirAccess.dir_exists_absolute(build_context+"/output"), 
+	"Export-Templater: Could not find the Output Folder. Should be at " + build_context + "/output")
 	
 	# Does our config folder exist
-	assert(DirAccess.dir_exists_absolute(build_context+"/config"), "Export-Templater: Could not find the Config Folder. Should be at " + build_context + "/config")
+	assert(DirAccess.dir_exists_absolute(build_context+"/config"), 
+	"Export-Templater: Could not find the Config Folder. Should be at " + build_context + "/config")
 	
 	print("Export-Templater: Testing complete!")
 	

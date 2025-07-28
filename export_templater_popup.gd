@@ -25,6 +25,7 @@ var build_config = {
 var controls := {
 	"web": {},
 	"windows": {},
+	"linuxbsd": {},
 }
 
 func _ready() -> void:
@@ -38,10 +39,14 @@ func gather_UI() -> void:
 	controls["web"]["threads"] = $Tabs/Web/VCon/Threads/CheckButton
 	
 	controls["windows"]["encryption_input"] = $Tabs/Windows/VCon/Encryption/LineEdit
-	print(controls["windows"]["encryption_input"] )
 	controls["windows"]["godot_version"] = $Tabs/Windows/VCon/GodotVersion/OptionButton
 	controls["windows"]["target"] = $Tabs/Windows/VCon/Target/OptionButton
 	controls["windows"]["architecture"] = $Tabs/Windows/VCon/Architecture/OptionButton
+	
+	controls["linuxbsd"]["encryption_input"] = $Tabs/Linuxbsd/VCon/Encryption/LineEdit
+	controls["linuxbsd"]["godot_version"] = $Tabs/Linuxbsd/VCon/GodotVersion/OptionButton
+	controls["linuxbsd"]["target"] = $Tabs/Linuxbsd/VCon/Target/OptionButton
+	controls["linuxbsd"]["architecture"] = $Tabs/Linuxbsd/VCon/Architecture/OptionButton
 	
 
 func get_selected_option(option_button):
@@ -68,7 +73,13 @@ func start_build():
 			build_config["platform_settings"]["arch"] = get_selected_option(controls["windows"]["architecture"])
 			build_config["platform_settings"]["use_mingw"] = "yes"
 			build_config["platform_settings"]["use_llvm"] = "yes"
-	
+		"linuxbsd":
+			build_config["platform"] = "linuxbsd"
+			build_config["encryption_key"] = is_valid_encryption_key(controls["linuxbsd"]["encryption_input"].text)
+			build_config["godot_version"] = get_selected_option(controls["linuxbsd"]["godot_version"])
+			build_config["target"] = get_selected_option(controls["linuxbsd"]["target"])
+			build_config["platform_settings"]["arch"] = get_selected_option(controls["linuxbsd"]["architecture"])
+
 	print(build_config)
 	build_requested.emit(build_config)
 	

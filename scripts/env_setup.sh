@@ -9,4 +9,4 @@ source ./emsdk_env.sh
 
 python3 /workspace/scripts/build_templates.py "/workspace/config/data.json"
 
-mv  -v /workspace/godot/bin/* /workspace/output
+cp -r /workspace/godot/bin /workspace/output

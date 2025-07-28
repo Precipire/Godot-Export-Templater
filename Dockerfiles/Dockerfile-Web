@@ -1,0 +1,20 @@
+# Using Ubuntu
+FROM ubuntu:22.04
+
+# disables questions?? (assuming this removes the installer stuff)
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install the packages required
+
+RUN apt update && apt install -y \
+    git scons python3 build-essential \
+    pkg-config libssl-dev \
+    zip wget \
+    && apt clean
+
+WORKDIR /workspace
+
+RUN git clone https://github.com/emscripten-core/emsdk.git /workspace/emsdk
+RUN git config --global advice.detachedHead false
+
+CMD ["/bin/bash"]
