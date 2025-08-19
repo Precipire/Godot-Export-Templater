@@ -30,7 +30,6 @@ Check the actual container logs for a more live view
 - Add build profile support
 - Add option for engine string stripping (to make finding the encryption key more difficult)
 - Add in more niche options for platforms
-- Build profile support
 
 ## Known Bugs
 - Console won't print the whole output
