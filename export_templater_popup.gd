@@ -6,13 +6,9 @@ signal build_requested(build_config: Dictionary)
 # get all of the inputs
 @onready var tabs: TabContainer = $Tabs
 
-# lists for valid options.
-# Godot versions based on github tags
-var godot_versions_list := ["4.4.1-stable", "4.4-stable"]
-var platforms_list := ["android", "ios", "linuxbsd", "macos", "web", "windows"]
-# Not sure if these need to be filtered based on platform yet (I assume they do)
-var arch_list := ["auto", "x86_32", "x86_64", "arm32", "arm64", "rv64", "ppc32", "ppc64", "wasm32"]
-var target_list := ["editor", "template_debug", "template_release"]
+# Godot versions based on github tags — update here to add/remove dropdown options
+var godot_versions_list := ["4.4.1-stable", "4.4-stable", "4.3-stable"]
+var target_list := ["template_release", "template_debug", "editor"]
 
 var build_config = {
 	"platform": "",
@@ -30,6 +26,7 @@ var controls := {
 
 func _ready() -> void:
 	gather_UI()
+	populate_dropdowns()
 
 func gather_UI() -> void:
 	#Web choices (encryption, threads, Godot version,  
@@ -48,6 +45,18 @@ func gather_UI() -> void:
 	controls["linuxbsd"]["target"] = $Tabs/Linuxbsd/VCon/Target/OptionButton
 	controls["linuxbsd"]["architecture"] = $Tabs/Linuxbsd/VCon/Architecture/OptionButton
 	
+
+func populate_dropdowns() -> void:
+	for platform in controls:
+		var version_btn: OptionButton = controls[platform]["godot_version"]
+		version_btn.clear()
+		for version in godot_versions_list:
+			version_btn.add_item(version)
+
+		var target_btn: OptionButton = controls[platform]["target"]
+		target_btn.clear()
+		for target in target_list:
+			target_btn.add_item(target)
 
 func get_selected_option(option_button):
 	return option_button.get_item_text(option_button.get_selected_id())

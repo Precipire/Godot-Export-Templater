@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://dap8b6avxtgnd"]
+[gd_scene format=3 uid="uid://dap8b6avxtgnd"]
 
-[ext_resource type="Script" uid="uid://cxkeatmqmkty0" path="res://addons/exporttemplater/export_templater_popup.gd" id="1_nm325"]
+[ext_resource type="Script" path="res://addons/exporttemplater/export_templater_popup.gd" id="1_nm325"]
 
 [node name="PopupPanel" type="ConfirmationDialog"]
 title = "Godot Export Templater"
@@ -55,14 +55,6 @@ text = "Godot Version:"
 
 [node name="OptionButton" type="OptionButton" parent="Tabs/Web/VCon/GodotVersion"]
 layout_mode = 2
-selected = 0
-item_count = 3
-popup/item_0/text = "4.4.1-stable"
-popup/item_0/id = 0
-popup/item_1/text = "4.4-stable"
-popup/item_1/id = 1
-popup/item_2/text = "4.3-stable"
-popup/item_2/id = 2
 
 [node name="Target" type="HBoxContainer" parent="Tabs/Web/VCon"]
 layout_mode = 2
@@ -76,14 +68,6 @@ justification_flags = 162
 
 [node name="OptionButton" type="OptionButton" parent="Tabs/Web/VCon/Target"]
 layout_mode = 2
-selected = 0
-item_count = 3
-popup/item_0/text = "template_release"
-popup/item_0/id = 0
-popup/item_1/text = "template_debug"
-popup/item_1/id = 1
-popup/item_2/text = "editor"
-popup/item_2/id = 2
 
 [node name="Threads" type="HBoxContainer" parent="Tabs/Web/VCon"]
 layout_mode = 2
@@ -136,14 +120,6 @@ text = "Godot Version:"
 
 [node name="OptionButton" type="OptionButton" parent="Tabs/Windows/VCon/GodotVersion"]
 layout_mode = 2
-selected = 0
-item_count = 3
-popup/item_0/text = "4.4.1-stable"
-popup/item_0/id = 0
-popup/item_1/text = "4.4-stable"
-popup/item_1/id = 1
-popup/item_2/text = "4.3-stable"
-popup/item_2/id = 2
 
 [node name="Target" type="HBoxContainer" parent="Tabs/Windows/VCon"]
 layout_mode = 2
@@ -157,14 +133,6 @@ justification_flags = 162
 
 [node name="OptionButton" type="OptionButton" parent="Tabs/Windows/VCon/Target"]
 layout_mode = 2
-selected = 0
-item_count = 3
-popup/item_0/text = "template_release"
-popup/item_0/id = 0
-popup/item_1/text = "template_debug"
-popup/item_1/id = 1
-popup/item_2/text = "editor"
-popup/item_2/id = 2
 
 [node name="Architecture" type="HBoxContainer" parent="Tabs/Windows/VCon"]
 layout_mode = 2
@@ -228,14 +196,6 @@ text = "Godot Version:"
 
 [node name="OptionButton" type="OptionButton" parent="Tabs/Linuxbsd/VCon/GodotVersion"]
 layout_mode = 2
-selected = 0
-item_count = 3
-popup/item_0/text = "4.4.1-stable"
-popup/item_0/id = 0
-popup/item_1/text = "4.4-stable"
-popup/item_1/id = 1
-popup/item_2/text = "4.3-stable"
-popup/item_2/id = 2
 
 [node name="Target" type="HBoxContainer" parent="Tabs/Linuxbsd/VCon"]
 layout_mode = 2
@@ -249,14 +209,6 @@ justification_flags = 162
 
 [node name="OptionButton" type="OptionButton" parent="Tabs/Linuxbsd/VCon/Target"]
 layout_mode = 2
-selected = 0
-item_count = 3
-popup/item_0/text = "template_release"
-popup/item_0/id = 0
-popup/item_1/text = "template_debug"
-popup/item_1/id = 1
-popup/item_2/text = "editor"
-popup/item_2/id = 2
 
 [node name="Architecture" type="HBoxContainer" parent="Tabs/Linuxbsd/VCon"]
 layout_mode = 2
@@ -280,4 +232,3 @@ popup/item_2/text = "x86_32"
 popup/item_2/id = 2
 
 [connection signal="confirmed" from="." to="." method="start_build"]
-[connection signal="tab_changed" from="Tabs" to="." method="_on_tab_changed"]

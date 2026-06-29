@@ -54,30 +54,37 @@ func show_options():
 	var popup = EXPORT_TEMPLATER_POPUP.instantiate()
 	get_editor_interface().get_base_control().add_child(popup)
 	popup.popup_centered()
-	if !popup.is_connected("build_requested", create_godot_template):
-		popup.build_requested.connect(create_godot_template) 
+	popup.build_requested.connect(create_godot_template)
 
 func download_godot_source() -> bool:
-	var output := []
-	var exit_code := OS.execute("git", ["clone", "https://github.com/godotengine/godot.git", build_context + "/godot_source/godot"])
-	if exit_code != 0:
-		print("Something went wrong cloning Godot")
+	var godot_path = build_context + "/godot_source/godot"
+	if DirAccess.dir_exists_absolute(godot_path + "/.git"):
+		print("Godot source already present, skipping clone")
+		return true
+	print("Cloning Godot source (this will take a while)...")
+	var pipe := OS.execute_with_pipe("git", ["clone", "https://github.com/godotengine/godot.git", godot_path])
+	if pipe.size() == 0:
+		print("Failed to start git clone")
+		return false
+	await start_pipe_thread(pipe)
+	if !DirAccess.dir_exists_absolute(godot_path + "/.git"):
+		print("Cloning failed")
 		return false
 	print("Godot Cloned!")
 	return true
 
 ## The real part of this script
 func create_godot_template(build_info):
-	
-	# Pull Godot
-	download_godot_source()
-	
+
+	if !await download_godot_source():
+		return
+
 	# Turn build info into a JSON file inside the config folder
 	var json = JSON.stringify(build_info)
 	var config_file = FileAccess.open(build_context + "/config/data.json", FileAccess.WRITE)
 	config_file.store_line(json)
-	await get_tree().create_timer(1).timeout
-	
+	config_file.close()
+
 	var dockerfile_name := ""
 	var setup_name := ""
 	match build_info["platform"]:
@@ -90,39 +97,46 @@ func create_godot_template(build_info):
 		"linuxbsd":
 			dockerfile_name = "Dockerfile-Linuxbsd"
 			setup_name = "linuxbsd_setup.sh"
-	
-	#First we build the image which we need to switch to a pipe
-	await create_docker_build(image_tag, dockerfile_name, build_info)
-	await get_tree().create_timer(1).timeout
+		_:
+			push_error("ExportTemplater: Unsupported platform: " + build_info["platform"])
+			return
+
+	if !await create_docker_build(image_tag, dockerfile_name, build_info):
+		return
 	await run_docker_script(build_info, setup_name)
 	print("Complete! Check output folder for templates")
 
 
 ## Creates the docker image from the Dockerfile (takes a while if there is no cache)
-signal docker_build_complete
-func create_docker_build(version, dockerfile_name: String, build_info):
+func create_docker_build(version, dockerfile_name: String, build_info) -> bool:
 	print("Building Docker image")
 	print("This may take a while for first time runs...")
-	
+
 	print(build_context + "/Dockerfiles/"+ dockerfile_name)
 	var bin = "docker"
-	var args = ["build",
+	var args = ["buildx", "build",
 				"--progress=plain",
 				"-t",
 				image_tag+build_info["platform"]+DOCKER_IMAGE_VERSION,
 				"--file",
 				build_context + "/Dockerfiles/"+dockerfile_name,
 				build_context + "/Dockerfiles"]
-	
+
 	var pipe := OS.execute_with_pipe(bin, args)
 	if !get_window().is_connected("close_requested",clean_thread):
 		get_window().close_requested.connect(clean_thread)
 	if pipe.size() == 0:
-		# Something went wrong
 		print("Docker Image Build Failed")
-		return
+		return false
 	await start_pipe_thread(pipe)
+
+	var tag = image_tag + build_info["platform"] + DOCKER_IMAGE_VERSION
+	if OS.execute("docker", ["image", "inspect", tag], [], true) != 0:
+		push_error("ExportTemplater: Docker image was not created: " + tag)
+		return false
+
 	print("Image Built")
+	return true
 
 func run_docker_script(build_info, setup_name):
 	print("Running Docker container")
@@ -189,6 +203,9 @@ func _thread_func():
 			else:
 				stderr.close()
 		OS.delay_msec(10)
+	# Pipes can close before the process fully exits; wait for the process itself
+	while OS.is_process_running(pid):
+		OS.delay_msec(100)
 	pipe_done.emit.call_deferred()
 
 func _on_pipe_line(line):
@@ -220,12 +237,17 @@ func test_environment(build_context):
 	"Export-Templater: Could not find build_templates.py")
 	
 	# Does output folder exist?
+	if(!DirAccess.dir_exists_absolute(build_context+"/output")):
+		print("Output Folder Missing. Attempting to create...")
+		DirAccess.make_dir_absolute(build_context+"/output")
 	assert(DirAccess.dir_exists_absolute(build_context+"/output"), 
 	"Export-Templater: Could not find the Output Folder. Should be at " + build_context + "/output")
 	
 	# Does our config folder exist
+	if(!DirAccess.dir_exists_absolute(build_context+"/config")):
+		print("Config Folder Missing. Attempting to create...")
+		DirAccess.make_dir_absolute(build_context+"/config")
 	assert(DirAccess.dir_exists_absolute(build_context+"/config"), 
 	"Export-Templater: Could not find the Config Folder. Should be at " + build_context + "/config")
 	
 	print("Export-Templater: Testing complete!")
-	
